@@ -99,7 +99,9 @@
                     <option value="10">Show 10 Flashcards</option>
                 </select>
             </div>                <button id="deleteFolderButton" class="deletebutton" onclick="deleteFolder(currentFolder)">🗑️ Delete Folder</button>
-            <button id="vivaid" class="vivaclass" onclick="">Viva</button>
+            <button id="vivaid" class="vivaclass" onclick="startViva()">Viva</button>
+            <button onclick="stopViva()" class="vivaclass">Stop Viva</button>
+
         </div>
     </header>
     <div id="flashcards"></div>
@@ -124,6 +126,64 @@ document.getElementById("close-menu-btn").addEventListener("click", () => {
 
 
 
+
+// viva 
+// viva 
+document.getElementById('vivaid').addEventListener('click', startViva);
+
+function startViva() {
+    const flashcardsDiv = document.querySelectorAll('#flashcards .flashcard');
+    const flashcards = Array.from(flashcardsDiv).map(card => ({
+        question: card.querySelector('.card-front p').textContent,
+        answer: card.querySelector('.card-back p').textContent
+    }));
+
+    if (flashcards.length === 0) {
+        alert('No flashcards found to speak!');
+        return;
+    }
+
+    let currentQuestionIndex = 0;
+    let isSpeaking = true;
+
+    function speakText(text, onComplete) {
+        window.speechSynthesis.cancel(); // Clear any ongoing speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.onend = onComplete; // Call the callback after speech ends
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function askQuestion() {
+        if (!isSpeaking || currentQuestionIndex >= flashcards.length) {
+            alert('End of flashcards!');
+            return;
+        }
+
+        const currentCard = flashcards[currentQuestionIndex];
+        const question = currentCard.question;
+        const answer = currentCard.answer;
+
+        // Speak the question
+        speakText(`Question: ${question}`, () => {
+            // After a short delay, speak the answer
+            setTimeout(() => {
+                if (!isSpeaking) return; // Stop if speaking is canceled
+                speakText(`Answer: ${answer}`, () => {
+                    currentQuestionIndex++;
+                    askQuestion(); // Move to the next question
+                });
+            }, 2000); // Delay before speaking the answer
+        });
+    }
+
+    window.stopViva = function () {
+        isSpeaking = false;
+        window.speechSynthesis.cancel(); // Stop any ongoing speech
+        alert('Viva stopped.');
+    };
+
+    askQuestion();
+}
 
 
 
@@ -338,18 +398,15 @@ function displayFlashcards(flashcardsToDisplay = null) {
 // Filter flashcards by difficulty
 function filterFlashcards() {
     if (!currentFolder || !folders[currentFolder]) {
-        console.error("Invalid folder or folder not selected.");
+        console.error("Invalid current folder.");
         return;
     }
 
-    const selectedDifficulty = document.getElementById("difficultyFilter").value;
-
-    // Filter flashcards based on the selected difficulty
+    const difficulty = document.getElementById("difficultyFilter").value;
     currentFilteredFlashcards = folders[currentFolder].filter(card =>
-        !selectedDifficulty || card.difficulty === selectedDifficulty
+        difficulty === "" || card.difficulty === difficulty
     );
 
-    // Display filtered flashcards
     displayFlashcards(currentFilteredFlashcards);
 }
 
@@ -595,41 +652,24 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Folder actions dropdown not found.");
     }
 });
-
-
 function setDifficulty(index, difficulty, event) {
-    event.stopPropagation();
+    event.stopPropagation(); // Prevent flipping the card on click
 
     if (!currentFolder || !folders[currentFolder]) {
-        alert("Please select a valid folder first!");
+        alert("Please select a folder first!");
         return;
     }
 
-    const flashcards = folders[currentFolder];
+    // Update the flashcard's difficulty
+    const flashcard = folders[currentFolder][index];
+    flashcard.difficulty = difficulty;
 
-    // Adjust index if filtering is applied
-    const actualIndex = currentFilteredFlashcards.length ? flashcards.indexOf(currentFilteredFlashcards[index]) : index;
-
-    if (actualIndex === -1) {
-        console.error("Flashcard not found in the main list.");
-        return;
-    }
-
-    // Toggle the difficulty or set it
-    const currentDifficulty = flashcards[actualIndex].difficulty;
-    flashcards[actualIndex].difficulty = currentDifficulty === difficulty ? "" : difficulty;
-
+    // Save changes to localStorage
     saveToLocalStorage();
 
-    // Refresh the filtered view if a filter is applied
-    if (currentFilteredFlashcards.length) {
-        filterFlashcards();
-    } else {
-        displayFlashcards();
-    }
+    // Refresh the flashcard display
+    displayFlashcards();
 }
-
-
 function downloadAllData() {
             const dataStr = JSON.stringify(folders, null, 2);
             const blob = new Blob([dataStr], { type: "application/json" });
