@@ -1,0 +1,859 @@
+/* Root Variables */
+:root {
+    --primary-color: #4caf50;
+    --secondary-color: #fff;
+    --background-color: #f4f4f9;
+    --text-color: #333;
+    --tag-text-color: #212121;
+    --header-text-color: #4caf50;
+    --easy-color: #8bc34a;
+    --normal-color: #ff9800;
+    --hard-color: #f44336;
+    --neon-easy-color: #00ff00;
+    --neon-normal-color: #ffff00;
+    --neon-hard-color: #ff0000;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --primary-color: #333;
+    --secondary-color: #444;
+    --background-color: #121212;
+    --text-color: #ddd;
+    --tag-text-color: #121212;
+    --header-text-color: #ddd;
+}
+
+/* Body Styling */
+body {
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Flashcards Grid */
+#flashcards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.flashcard {
+    position: relative;
+    width: 200px;
+    min-height: 290px;
+    perspective: 1000px;
+    cursor: pointer;
+    margin: 15px;
+    transition: transform 0.3s ease;
+    border: 3px solid;
+    border-radius: 8px;
+    box-shadow: 0 0 10px, 0 0 20px;
+    overflow: visible;
+}
+
+/* Flashcard Difficulty Styles */
+.flashcard[data-difficulty="easy"] {
+    border-color: var(--neon-easy-color);
+    box-shadow: 0 0 10px var(--neon-easy-color), 0 0 20px var(--neon-easy-color);
+}
+
+.flashcard[data-difficulty="normal"] {
+    border-color: var(--neon-normal-color);
+    box-shadow: 0 0 10px var(--neon-normal-color), 0 0 20px var(--neon-normal-color);
+}
+
+.flashcard[data-difficulty="hard"] {
+    border-color: var(--neon-hard-color);
+    box-shadow: 0 0 10px var(--neon-hard-color), 0 0 20px var(--neon-hard-color);
+}
+
+.flashcard:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+/* Header Styling */
+
+
+/* Dropdown Styling in Header */
+
+
+
+
+/* Hamburger Button */
+
+
+
+
+/* Mobile Menu */
+
+
+
+
+/* Close Button for Mobile Menu */
+
+
+
+
+/* Folder Actions Dropdown in Mobile Menu */
+
+
+
+
+/* Responsive Design */
+/* Mobile Styles */
+@media (max-width: 768px) {
+    #flashcards {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .flashcard {
+        width: 90%;
+        height: 40vh;
+        margin: 10px 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        border: 2px solid var(--primary-color);
+    }
+
+  
+
+    #toggle-header-btn {
+        width: 45px;
+        height: 45px;
+    }
+
+    #mobile-menu {
+        padding: 20px;
+    }
+
+    #mobile-menu select {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #flashcards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .flashcard {
+        flex: 1 1 calc(45% - 20px);
+        max-width: 300px;
+        margin: 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+}
+/* General Header Styling */
+
+
+/* Search Bar Styling */
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    
+
+    .search-bar {
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    .search-bar input {
+        width: calc(100% - 40px);
+    }
+
+    .search-bar button {
+        width: 40px;
+    }
+
+
+  
+}
+/* General Header Styling */
+
+/* Dropdown Styling */
+
+
+
+
+/* Controls (Previous/Next & Subset) */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.controls button {
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.controls button:hover {
+    background-color: #45a049;
+}
+
+.controls input {
+    padding: 8px;
+    font-size: 14px;
+    width: 60px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    flex-grow: 1;
+}
+
+.search-bar input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    flex: 1;
+}
+
+.search-bar button {
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+    background-color: #45a049;
+}
+
+/* Hamburger Button */
+#toggle-header-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#toggle-header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile Menu */
+
+
+/* Close Button for Mobile Menu */
+#close-menu-btn {
+    align-self: flex-end;
+    font-size: 20px;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#close-menu-btn:hover {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Folder Actions Dropdown in Mobile Menu */
+
+
+#mobile-menu select:focus {
+    outline: none;
+    box-shadow: 0 0 5px var(--primary-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header {
+        padding: 10px 15px;
+        flex-wrap: wrap;
+    }
+
+    .controls {
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-bar {
+        margin: 10px 0;
+        width: 100%;
+    }
+
+    #toggle-header-btn {
+        width: 45px;
+        height: 45px;
+    }
+
+    #mobile-menu {
+        padding: 20px;
+    }
+}
+/* General Header Styling */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #6200ea;
+    color: white;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap; /* Allows wrapping for smaller screens */
+}
+
+/* Dropdown Styling */
+header select {
+    margin-left: 10px;
+    padding: 8px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+    color: #6200ea;
+}
+
+header select:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar (Mobile Menu) */
+#mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 70%;
+    max-width: 280px;
+    height: 100%;
+    background-color: #6200ea;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+#mobile-menu.open {
+    left: 0;
+}
+
+/* Sidebar Components */
+#mobile-menu label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: white;
+}
+
+#mobile-menu select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+    color: #6200ea;
+    margin-bottom: 20px;
+}
+
+/* Navigation Arrows */
+#navigation-arrows {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    z-index: 1000;
+}
+
+#navigation-arrows button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#navigation-arrows button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#navigation-arrows button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+/* Hidden Class */
+.hidden {
+    display: none;
+}
+/* Mobile Styles */
+@media (max-width: 768px) {
+    #difficulty-filter-container {
+        width: 100%;
+    }
+
+    #difficultyFilter {
+        font-size: 16px;
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #difficultyFilter {
+        font-size: 15px;
+        width: 250px;
+        height: auto;
+    }
+}
+
+/* Default or Larger Screens */
+@media (min-width: 1025px) {
+    #difficultyFilter {
+        font-size: 14px;
+        width: 200px;
+        height: auto;
+    }
+}
+.flashcard {
+    perspective: 1000px;
+}
+
+.card-inner {
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    backface-visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+}
+.flashcard-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.flashcard-actions button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.flashcard-actions button:hover {
+    color: var(--primary-color);
+}
+
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.confirmation-modal .modal-content {
+    background-color: var(--background-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.confirmation-modal button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirmation-modal button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+/* Flashcard Base Styling */
+.flashcard {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    perspective: 1000px;
+    cursor: pointer;
+    border-radius: 10px;
+    border: 3px solid transparent; /* Default border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    background-color: var(--secondary-color);
+    overflow: hidden;
+}
+
+.flashcard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Inner Card Rotation */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+}
+
+.flashcard.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Front and Back Styling */
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.card-front {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    text-align: center;
+}
+
+.card-back {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transform: rotateY(180deg);
+    text-align: center;
+}
+.card-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.card-actions i {
+    font-size: 16px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.card-actions i:hover {
+    color: var(--primary-color);
+}
+
+
+#flashcards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+.flashcard {
+    position: relative;
+    width: 200px;
+    min-height: 290px;
+    /* Set a minimum height */
+    perspective: 1000px;
+    cursor: pointer;
+    margin: 15px;
+    transition: transform 0.3s ease;
+    border: 3px solid;
+    border-radius: 8px;
+    box-shadow: 0 0 10px, 0 0 20px;
+    overflow: visible;
+    /* Ensure content isn't clipped */
+
+}
+
+.flashcard[data-difficulty="easy"] {
+    border-color: var(--neon-easy-color);
+    box-shadow: 0 0 10px var(--neon-easy-color), 0 0 20px var(--neon-easy-color);
+}
+
+.flashcard[data-difficulty="normal"] {
+    border-color: var(--neon-normal-color);
+    box-shadow: 0 0 10px var(--neon-normal-color), 0 0 20px var(--neon-normal-color);
+}
+
+.flashcard[data-difficulty="hard"] {
+    border-color: var(--neon-hard-color);
+    box-shadow: 0 0 10px var(--neon-hard-color), 0 0 20px var(--neon-hard-color);
+}
+
+.flashcard:hover {
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.flashcard.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    box-sizing: border-box;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    word-wrap: break-word;
+}
+
+.card-front {
+    background: var(--secondary-color);
+    color: var(--text-color);
+
+}
+
+.card-back {
+    background: var(--primary-color);
+    color: var(--text-color);
+    transform: rotateY(180deg);
+
+}
+
+.tags {
+    margin-top: 10px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    font-size: 12px;
+    background: #eee;
+    border-radius: 3px;
+    padding: 2px 5px;
+    color: var(--tag-text-color);
+}
+
+.difficulty-icons {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.difficulty-icons .icon {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.icon.easy {
+    background-color: var(--easy-color);
+}
+
+.icon.normal {
+    background-color: var(--normal-color);
+}
+
+.icon.hard {
+    background-color: var(--hard-color);
+}
+
+
+        /* General Mobile Styles */
+        @media (max-width: 768px) {
+
+
+            #flashcards {
+                display: flex;
+                flex-direction: column;
+                /* Stack flashcards vertically */
+                gap: 15px;
+                width: 100%;
+                /* Ensure full-width usage */
+                align-items: center;
+                /* Center flashcards */
+            }
+
+            .flashcard {
+                width: 90%;
+                /* Occupy 90% of screen width */
+                height: 40vh;
+                /* Allow height to adjust based on content */
+                margin: 10px 0;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                border: 2px solid var(--primary-color);
+            }
+
+            .card-front,
+            .card-back {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .tags {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .tag {
+                padding: 2px 5px;
+                font-size: 12px;
+            }
+
+            .difficulty-icons {
+                bottom: 10px;
+                right: 10px;
+                gap: 5px;
+            }
+
+            .difficulty-icons .icon {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+        }
+
+
+        .deletebutton {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: white;
+            color: #6200ea;
+            margin-bottom: 20px;
+            gap: 10px; /* Space between icon and text */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+            margin-left: 10px;
+          }
+          
+          .deletebutton:hover {
+            background-color: #d32f2f; /* Darker red on hover */
+            transform: scale(1.05); /* Slight zoom effect */
+          }
+          
+          .deletebutton:active {
+            background-color: #b71c1c; /* Even darker red when clicked */
+            transform: scale(1); /* Reset scale on click */
+          }
+          
+          .deletebutton:focus {
+            outline: none; /* Remove focus outline */
+            box-shadow: 0 0 3px 2px rgba(255, 0, 0, 0.5); /* Red shadow on focus */
+          }
+          
+          .deletebutton svg {
+            width: 20px; /* Set icon size */
+            height: 20px; /* Set icon size */
+          }
+          .vivaclass{
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: white;
+            color: #6200ea;
+            margin-bottom: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+          }

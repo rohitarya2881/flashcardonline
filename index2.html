@@ -1,0 +1,650 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Flashcard App - Create, organize, and study your flashcards effortlessly. Perfect for students, educators, and professionals to enhance learning.">
+    <meta name="keywords" content="flashcards, study tool, learning app, create flashcards, educational tool">
+    <meta name="author" content="Rohit kumar">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Flashcard App">
+    <meta property="og:description"
+        content="Flashcard App - The ultimate tool for creating, organizing, and studying flashcards. Boost your learning today.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://simpleflashcard.tiiny.site/">
+    <meta property="og:image" content="https://yourwebsite.com/flashcard-preview.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Flashcard App">
+    <meta name="twitter:description"
+        content="Flashcard App - The ultimate tool for creating, organizing, and studying flashcards. Boost your learning today.">
+    <meta name="twitter:image" content="https://yourwebsite.com/flashcard-preview.png">
+    <title>Flashcard App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+ <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <!-- Hamburger Button -->
+        <button id="toggle-header-btn" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+    
+        <!-- Select Folder Dropdown -->
+        <select id="folderSelect" onchange="selectFolder()">
+            <option value="" disabled selected>Select a folder</option>
+            <!-- Options populated dynamically -->
+        </select>
+    
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input
+                type="text"
+                id="searchTag"
+                placeholder="Search flashcards..."
+                oninput="searchByTag()"
+            />
+            <button id="searchButton" onclick="searchByTag()">🔍</button>
+        </div>
+    
+        <!-- Mobile Menu (Sidebar) -->
+        <div id="mobile-menu">
+            <!-- Close Button -->
+            <button id="close-menu-btn">&times;</button>
+    
+            <!-- Folder Actions -->
+            <div id="folder-actions-container">
+                <label for="folderActions">Folder Actions</label>
+                <select id="folderActions" onchange="handleFolderAction(this.value)">
+                    <option value="" disabled selected>Folder Actions</option>
+                    <option value="createFolder">Create Folder</option>
+                    <option value="addFlashcard">Create Flashcard</option>
+                    <option value="toggleTheme">Toggle Theme</option>
+                    <option value="uploadJSON">Upload JSON</option>
+                    <option value="uploadDataJSON">Upload Data</option>
+                    <option value="downloadAllData">Download Data</option>
+                    <option value="syncChanges">Sync Changes</option>
+                    <option value="shuffleDisplay">Shuffle Display</option>
+                </select>
+                <input type="file" id="jsonFileInputUpload" style="display: none;" accept=".json"
+                onchange="handleFileUpload(event)">
+            <input type="file" id="jsonFileInputRestore" style="display: none;" accept=".json"
+                onchange="restoreData(event)">
+
+            </div>
+    
+            <!-- Difficulty Filter -->
+            <div id="difficulty-filter-container">
+                <label for="difficultyFilter">Difficulty</label>
+                <select id="difficultyFilter" onchange="filterFlashcards()">
+                    <option value="" selected>All</option>
+                    <option value="easy">Easy</option>
+                    <option value="normal">Normal</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+    
+            <!-- Controls -->
+            <div id="controls">
+                <label for="flashcardSubset">Subset Controls</label>
+                <select id="flashcardSubset" onchange="resetAndDisplaySubset()">
+                    <option value="" selected>Show All</option>
+                    <option value="5">Show 5 Flashcards</option>
+                    <option value="10">Show 10 Flashcards</option>
+                </select>
+            </div>                <button id="deleteFolderButton" class="deletebutton" onclick="deleteFolder(currentFolder)">🗑️ Delete Folder</button>
+            <button id="vivaid" class="vivaclass" onclick="">Viva</button>
+        </div>
+    </header>
+    <div id="flashcards"></div>
+    
+    <div id="navigation-arrows" class="hidden">
+        <button id="previousButton" onclick="changeSubsetPage(-1)" disabled>&larr; </button>
+        <button id="nextButton" onclick="changeSubsetPage(1)" disabled>&rarr;</button>
+    </div>
+  <script>
+    // Function to toggle the menu
+function toggleMenu() {
+    const menu = document.getElementById("mobile-menu");
+    menu.classList.toggle("open");
+}
+
+// Ensure the close button works
+document.getElementById("close-menu-btn").addEventListener("click", () => {
+    toggleMenu();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Initialize variables
+let folders = JSON.parse(localStorage.getItem("folders")) || {};
+let currentFolder = "";
+let currentFilteredFlashcards = [];
+let currentSubsetSize = 0;
+let currentPage = 0;
+
+// Save folders to localStorage
+function saveToLocalStorage() {
+    localStorage.setItem("folders", JSON.stringify(folders));
+    updateFolderSelect();
+}
+
+// Update folder dropdown
+function updateFolderSelect() {
+    const folderSelect = document.getElementById("folderSelect");
+    if (!folderSelect) {
+        console.error("Folder select element not found.");
+        return;
+    }
+
+    folderSelect.innerHTML = `<option value="" disabled selected>Select a folder</option>`;
+    Object.keys(folders).forEach(folder => {
+        const cardCount = folders[folder].length || 0;
+        const option = document.createElement("option");
+        option.value = folder;
+        option.textContent = `${folder} (${cardCount})`;
+        folderSelect.appendChild(option);
+    });
+}
+
+// Select a folder
+function selectFolder() {
+    const folderSelect = document.getElementById("folderSelect");
+    if (!folderSelect) {
+        console.error("Folder select element not found.");
+        return;
+    }
+
+    currentFolder = folderSelect.value;
+    if (!currentFolder || !folders[currentFolder]) {
+        alert("Invalid folder selected.");
+        return;
+    }
+
+    document.getElementById("difficultyFilter").value = "";
+    document.getElementById("flashcardSubset").value = "";
+    filterFlashcards();
+}
+
+// Create a new folder
+function createFolder() {
+    const folderName = prompt("Enter folder name:");
+    if (!folderName) {
+        alert("Folder creation canceled or name cannot be empty.");
+        return;
+    }
+
+    const trimmedName = folderName.trim();
+    if (folders[trimmedName]) {
+        alert("Folder already exists!");
+    } else {
+        folders[trimmedName] = [];
+        saveToLocalStorage();
+        updateFolderSelect();
+    }
+}
+
+// Delete a folder
+function deleteFolder(folderName) {
+    if (folders[folderName]) {
+        if (confirm(`Are you sure you want to delete the folder "${folderName}"?`)) {
+            delete folders[folderName];
+            saveToLocalStorage();
+            updateFolderSelect();
+
+            if (currentFolder === folderName) {
+                currentFolder = "";
+                document.getElementById("flashcards").innerHTML = ""; // Clear UI
+            }
+
+            alert(`Folder "${folderName}" has been deleted.`);
+        }
+    } else {
+        alert("Folder not found.");
+    }
+}
+
+// Add a flashcard
+function addFlashcard() {
+    if (!currentFolder) {
+        alert("Please select a folder first.");
+        return;
+    }
+
+    const question = prompt("Enter question:").trim();
+    const answer = prompt("Enter answer:").trim();
+    const tags = prompt("Enter tags (comma-separated):").trim();
+
+    if (question && answer) {
+        folders[currentFolder].push({
+            question,
+            answer,
+            tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
+            difficulty: "normal"
+        });
+        saveToLocalStorage();
+        displayFlashcards();
+    } else {
+        alert("Question and Answer fields cannot be empty.");
+    }
+}
+
+// Edit a flashcard
+function editFlashcard(index, event) {
+    event.stopPropagation();
+    const card = folders[currentFolder][index];
+
+    const newQuestion = prompt("Edit question:", card.question);
+    const newAnswer = prompt("Edit answer:", card.answer);
+    const newTags = prompt("Edit tags (comma-separated):", card.tags.join(", "));
+
+    if (newQuestion && newAnswer) {
+        card.question = newQuestion.trim();
+        card.answer = newAnswer.trim();
+        card.tags = newTags ? newTags.split(",").map(tag => tag.trim()) : [];
+        saveToLocalStorage();
+        displayFlashcards();
+    } else {
+        alert("Question and Answer cannot be empty.");
+    }
+}
+
+// Delete a flashcard
+function deleteFlashcard(index, event) {
+    event.stopPropagation();
+    if (confirm("Are you sure you want to delete this flashcard?")) {
+        folders[currentFolder].splice(index, 1);
+        saveToLocalStorage();
+        displayFlashcards();
+    }
+}
+
+// Display flashcards
+function displayFlashcards(flashcardsToDisplay = null) {
+    const flashcardsDiv = document.getElementById("flashcards");
+    if (!flashcardsDiv) {
+        console.error("Flashcards container element not found.");
+        return;
+    }
+
+    flashcardsDiv.innerHTML = "";
+
+    if (!currentFolder || !folders[currentFolder]) {
+        flashcardsDiv.innerHTML = "<p>Please select a folder to view flashcards.</p>";
+        return;
+    }
+
+    const flashcards = flashcardsToDisplay || folders[currentFolder];
+    if (flashcards.length === 0) {
+        flashcardsDiv.innerHTML = "<p>No flashcards available in this folder.</p>";
+        return;
+    }
+
+    flashcards.forEach((card, index) => {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "flashcard";
+        cardDiv.setAttribute("data-difficulty", card.difficulty);
+
+        cardDiv.innerHTML = `
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="card-actions">
+                        <i class="fas fa-edit" title="Edit" onclick="editFlashcard(${index}, event)"></i>
+                        <i class="fas fa-trash" title="Delete" onclick="deleteFlashcard(${index}, event)"></i>
+                    </div>
+                    <p>${card.question}</p>
+                    <div class="tags">${card.tags.map(tag => `<span class="tag">${tag}</span>`).join("")}</div>
+                </div><div class="difficulty-icons">
+                        <div class="icon easy" onclick="setDifficulty(${index}, 'easy', event)">E</div>
+                        <div class="icon normal" onclick="setDifficulty(${index}, 'normal', event)">N</div>
+                        <div class="icon hard" onclick="setDifficulty(${index}, 'hard', event)">H</div>
+                    </div>
+                <div class="card-back">
+                    <p>${card.answer}</p>
+                </div>
+            </div>
+        `;
+
+        cardDiv.querySelector(".card-inner").addEventListener("click", () => {
+            cardDiv.classList.toggle("flipped");
+        });
+
+        flashcardsDiv.appendChild(cardDiv);
+    });
+}
+
+// Filter flashcards by difficulty
+function filterFlashcards() {
+    if (!currentFolder || !folders[currentFolder]) {
+        console.error("Invalid folder or folder not selected.");
+        return;
+    }
+
+    const selectedDifficulty = document.getElementById("difficultyFilter").value;
+
+    // Filter flashcards based on the selected difficulty
+    currentFilteredFlashcards = folders[currentFolder].filter(card =>
+        !selectedDifficulty || card.difficulty === selectedDifficulty
+    );
+
+    // Display filtered flashcards
+    displayFlashcards(currentFilteredFlashcards);
+}
+
+// Toggle theme
+function toggleTheme() {
+    const body = document.body;
+    if (!body) {
+        console.error("Body element not found.");
+        return;
+    }
+
+    const currentTheme = body.getAttribute("data-theme") || "light";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    body.setAttribute("data-theme", newTheme);
+}
+
+// Search flashcards by tag
+function searchByTag() {
+    const searchTag = document.getElementById("searchTag").value.trim().toLowerCase();
+
+    if (!searchTag) {
+        alert("Please enter a tag to search for.");
+        return;
+    }
+
+    const matchingCards = folders[currentFolder]?.filter(card =>
+        card.tags.some(tag => tag.toLowerCase().includes(searchTag))
+    ) || [];
+
+    if (matchingCards.length > 0) {
+        displayFlashcards(matchingCards);
+    } else {
+        document.getElementById("flashcards").innerHTML = "<p>No matching flashcards found.</p>";
+    }
+}
+
+// Initialize UI
+document.addEventListener("DOMContentLoaded", () => {
+    updateFolderSelect();
+});
+function resetAndDisplaySubset() {
+    const subsetValue = document.getElementById("flashcardSubset").value;
+
+    // Show navigation arrows if a subset is selected
+    const navigationArrows = document.getElementById("navigation-arrows");
+    if (!navigationArrows) {
+        console.error("Navigation arrows element not found.");
+        return;
+    }
+
+    if (subsetValue) {
+        navigationArrows.classList.remove("hidden");
+    } else {
+        navigationArrows.classList.add("hidden");
+    }
+
+    // Reset to the first page and display the subset
+    currentPage = 0;
+    displaySubset();
+}
+function displaySubset() {
+    if (!currentFolder || !folders[currentFolder]) {
+        alert("Please select a folder first!");
+        return;
+    }
+
+    const subsetSize = parseInt(document.getElementById("flashcardSubset").value, 10);
+    const selectedDifficulty = document.getElementById("difficultyFilter").value;
+    const flashcards = folders[currentFolder];
+
+    if (!flashcards || flashcards.length === 0) {
+        alert("No flashcards available in the selected folder.");
+        return;
+    }
+
+    currentFilteredFlashcards = flashcards.filter(card =>
+        !selectedDifficulty || card.difficulty === selectedDifficulty
+    );
+
+    currentSubsetSize = subsetSize || currentFilteredFlashcards.length;
+
+    currentPage = 0;
+    updatePaginationControls();
+    displayCurrentSubset();
+}
+
+function displayCurrentSubset() {
+    const start = currentPage * currentSubsetSize;
+    const end = Math.min(start + currentSubsetSize, currentFilteredFlashcards.length);
+
+    const subsetFlashcards = currentFilteredFlashcards.slice(start, end);
+    displayFlashcards(subsetFlashcards);
+
+    updatePaginationControls();
+}
+
+function changeSubsetPage(direction) {
+    const totalPages = Math.ceil(currentFilteredFlashcards.length / currentSubsetSize);
+
+    currentPage += direction;
+
+    if (currentPage < 0) currentPage = 0;
+    if (currentPage >= totalPages) currentPage = totalPages - 1;
+
+    displayCurrentSubset();
+}
+function updatePaginationControls() {
+    const totalPages = Math.ceil(currentFilteredFlashcards.length / currentSubsetSize);
+
+    const previousButton = document.getElementById("previousButton");
+    const nextButton = document.getElementById("nextButton");
+
+    if (!previousButton || !nextButton) {
+        console.error("Pagination buttons not found.");
+        return;
+    }
+
+    previousButton.disabled = currentPage === 0;
+    nextButton.disabled = currentPage >= totalPages - 1;
+}
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) {
+        alert("No file selected.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            if (!currentFolder) {
+                alert("Please select a folder before uploading flashcards.");
+                return;
+            }
+
+            if (Array.isArray(data)) {
+                data.forEach(flashcard => {
+                    if (flashcard.question && flashcard.answer) {
+                        folders[currentFolder].push({
+                            question: flashcard.question.trim(),
+                            answer: flashcard.answer.trim(),
+                            tags: Array.isArray(flashcard.tags) ? flashcard.tags.map(tag => tag.trim()) : [],
+                        });
+                    } else {
+                        console.warn("Skipped invalid flashcard entry:", flashcard);
+                    }
+                });
+
+                saveToLocalStorage();
+                displayFlashcards();
+                alert("Flashcards uploaded successfully!");
+            } else {
+                alert("Invalid file format: Expected an array of flashcards.");
+            }
+        } catch (error) {
+            console.error("Error reading JSON file:", error);
+            alert("Error processing file: Please ensure it's a valid JSON format.");
+        }
+    };
+
+    reader.readAsText(file);
+}
+function restoreData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            if (typeof importedData === "object") {
+                folders = importedData;
+                saveToLocalStorage();
+                updateFolderSelect();
+                displayFlashcards();
+                alert("Data restored successfully!");
+            } else {
+                alert("Invalid data format!");
+            }
+        } catch (error) {
+            alert("Error parsing JSON file. Please check the file format.");
+        }
+    };
+    reader.readAsText(file);
+}
+function handleFolderAction(action) {
+    if (!action) {
+        console.warn("No action selected.");
+        return;
+    }
+
+    switch (action) {
+        case "createFolder":
+            createFolder();
+            break;
+        case "addFlashcard":
+            addFlashcard();
+            break;
+        case "toggleTheme":
+            toggleTheme();
+            break;
+        case "uploadJSON":
+            document.getElementById("jsonFileInputUpload").click();
+            break;
+        case "uploadDataJSON":
+            document.getElementById("jsonFileInputRestore").click();
+            break;
+        case "downloadAllData":
+            downloadAllData();
+            break;
+        case "syncChanges":
+            alert("Sync functionality is not yet implemented.");
+            break;
+        case "shuffleDisplay":
+            if (currentFolder) {
+                folders[currentFolder] = shuffleArray(folders[currentFolder]);
+                saveToLocalStorage();
+                displayFlashcards();
+                alert("Flashcards shuffled!");
+            } else {
+                alert("Please select a folder first!");
+            }
+            break;
+        default:
+            console.error(`Unhandled action: ${action}`);
+    }
+
+    // Reset the dropdown to prevent accidental re-selection
+    document.getElementById("folderActions").selectedIndex = 0;
+}
+document.addEventListener("DOMContentLoaded", () => {
+    updateFolderSelect();
+
+    // Attach event listener to folderActions dropdown
+    const folderActions = document.getElementById("folderActions");
+    if (folderActions) {
+        folderActions.addEventListener("change", (event) => {
+            handleFolderAction(event.target.value);
+        });
+    } else {
+        console.error("Folder actions dropdown not found.");
+    }
+});
+
+
+function setDifficulty(index, difficulty, event) {
+    event.stopPropagation();
+
+    if (!currentFolder || !folders[currentFolder]) {
+        alert("Please select a valid folder first!");
+        return;
+    }
+
+    const flashcards = folders[currentFolder];
+
+    // Adjust index if filtering is applied
+    const actualIndex = currentFilteredFlashcards.length ? flashcards.indexOf(currentFilteredFlashcards[index]) : index;
+
+    if (actualIndex === -1) {
+        console.error("Flashcard not found in the main list.");
+        return;
+    }
+
+    // Toggle the difficulty or set it
+    const currentDifficulty = flashcards[actualIndex].difficulty;
+    flashcards[actualIndex].difficulty = currentDifficulty === difficulty ? "" : difficulty;
+
+    saveToLocalStorage();
+
+    // Refresh the filtered view if a filter is applied
+    if (currentFilteredFlashcards.length) {
+        filterFlashcards();
+    } else {
+        displayFlashcards();
+    }
+}
+
+
+function downloadAllData() {
+            const dataStr = JSON.stringify(folders, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "flashcard_data.json"; // File name for download
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+  </script>
+</body>
+
+</html>
