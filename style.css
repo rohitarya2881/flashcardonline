@@ -32,7 +32,9 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
 }
-
+.card-back p {
+height: 100%;
+}
 /* Flashcards Grid */
 #flashcards {
     display: grid;
@@ -690,7 +692,7 @@ header select:focus {
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow: scroll;
     text-align: center;
     word-wrap: break-word;
 }
