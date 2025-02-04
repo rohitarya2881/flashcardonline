@@ -692,11 +692,16 @@ header select:focus {
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: scroll;
+    overflow-y: scroll;
     text-align: center;
     word-wrap: break-word;
 }
-
+.card-back::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+.card-front::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
 .card-front {
     background: var(--secondary-color);
     color: var(--text-color);
