@@ -695,13 +695,10 @@ header select:focus {
     overflow-y: scroll;
     text-align: center;
     word-wrap: break-word;
+        scrollbar-width: none;  /* Firefox */
+
 }
-.card-back::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
-}
-.card-front::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
-}
+
 .card-front {
     background: var(--secondary-color);
     color: var(--text-color);
