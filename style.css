@@ -34,6 +34,7 @@ body {
 }
 .card-back p {
 height: 100%;
+    align-content: center;
 }
 /* Flashcards Grid */
 #flashcards {
